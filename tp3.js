@@ -1,4 +1,8 @@
-"use strict";
+/**
+ * Author Maxime Drapeau DRAM89110108
+ */
+
+
 import * as THREE from 'three';
 import { OutlineEffect } from 'three/addons/effects/OutlineEffect.js';
 import { STLLoader } from 'three/addons/loaders/STLLoader.js';
@@ -11,6 +15,12 @@ let environment = null;
 let skybox_texture = null;
 
 let controls;
+
+let effect = null;
+
+let camera_light = null;
+
+let material = null;
 
 function loadFile(filePath) {
     var result = null;
@@ -40,38 +50,45 @@ function createScene() {
     let ambient_light = new THREE.AmbientLight("white", 0.5);
     scene.add( ambient_light );
 
-    let camera_light = new THREE.DirectionalLight("white", 0.5);
+    camera_light = new THREE.DirectionalLight("white", 0.5);
     camera.add(camera_light);
 
     scene.background = skybox_texture;
 
 
+    renderer.render(scene, camera);
+    
+
 }
 
 function createMaterial(vertShader, fragShader){
-    // TODO: Création du ShaderMaterial et des variables uniformes à transmettre au shaders.
-    const meshMaterial = null;
+    const meshMaterial = new THREE.ShaderMaterial( {
+	    uniforms: {
+            diffuseColor:  { value: new THREE.Vector3(0.9, 0.2, 0.2) }
+	    },
+            vertexShader: vertShader,
+	        fragmentShader: fragShader,
+    } );
     return meshMaterial;
 }
 
 function animate() {
-    // TODO: modifiez la ligne suivante pour utiliser le post-processing demandé
-
     controls.update();
-    renderer.render(scene, camera);
+
+
+	effect.render( scene, camera );
 
     requestAnimationFrame(animate);
 }
 
-function load_trike() {
+function load_trike(material) {
     const STL_loader = new STLLoader();;
     STL_loader.load("Cute_triceratops.stl",
-        (geometry) => {
-            const material = new THREE.MeshPhysicalMaterial({ color: 0xffffff });
-            
+        (geometry) => {    
+            geometry.computeBoundingBox();
+            geometry.center();        
             const trike = new THREE.Mesh(geometry, material);
             trike.scale.set(0.1, 0.1, 0.1);
-            trike.position.set(-1, 0, -2);
             scene.add(trike);
         },
         undefined,
@@ -103,13 +120,13 @@ function init() {
     // Création du shaderMaterial
     const vertexShaderSource = loadFile("./tp3.vert");
     const fragmentShaderSource = loadFile("./tp3.frag");
-    let material = createMaterial(vertexShaderSource, fragmentShaderSource);
+    material = createMaterial(vertexShaderSource, fragmentShaderSource);
 
     // Importation du modèle 3D
-    load_trike();
+    load_trike(material);
     
 
-    // TODO: Création du postprocessing
+    effect = new OutlineEffect( renderer, { defaultThickness : 0.01} );
 
     // Animation de la scène (sera appelée toutes les 30 ms)
     animate();
