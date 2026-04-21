@@ -83,7 +83,7 @@ function animate() {
 
 function load_trike(material) {
     const STL_loader = new STLLoader();;
-    STL_loader.load("Cute_triceratops.stl",
+    STL_loader.load("model.stl",
         (geometry) => {    
             geometry.computeBoundingBox();
             geometry.center();        
@@ -110,7 +110,7 @@ function init() {
 
     // Importation des textures de la skybox
     const loader = new THREE.CubeTextureLoader();
-    loader.setPath( 'LarnacaCastle/' );
+    loader.setPath( 'cubemap/' );
     skybox_texture = loader.load( [ 'posx.jpg', 'negx.jpg', 'posy.jpg', 'negy.jpg', 'posz.jpg', 'negz.jpg'] );
 
 
