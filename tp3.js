@@ -64,7 +64,7 @@ function createScene() {
 function createMaterial(vertShader, fragShader){
     const meshMaterial = new THREE.ShaderMaterial( {
 	    uniforms: {
-            diffuseColor:  { value: new THREE.Vector3(0.9, 0.2, 0.2) }
+            diffuseColor:  { value: new THREE.Vector3(0.9, 0.15, 0.15) }
 	    },
             vertexShader: vertShader,
 	        fragmentShader: fragShader,

@@ -1,9 +1,11 @@
 //Rappel : Certains attributs/uniformes sont disponibles par défaut (voir https://archive.threejs.org/docs/#api/en/renderers/webgl/WebGLProgram)
 
-out float intensity;
+out vec3 interpolatedNormal;
+out vec3 interpolatedLight;
 
 void main() {
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    vec3 N = normalize(normalMatrix * normal);
-    intensity = dot(vec3(0.0, 0.0, 1.0), N);
+    vec4 eyeCoords = modelViewMatrix * vec4(position, 1.0);
+    gl_Position = projectionMatrix * eyeCoords;
+    interpolatedNormal = normalize( normalMatrix * normal );
+    interpolatedLight = vec3(0.0, 0.0, 1.0);
 }
